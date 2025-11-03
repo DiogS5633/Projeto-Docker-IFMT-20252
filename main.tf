@@ -9,42 +9,34 @@ terraform {
 
 provider "docker" {}
 
-# Cria uma rede interna Docker
+# Cria a rede interna Docker
 resource "docker_network" "rede_interna" {
-  name = "rede_interna"
+  name = var.rede_nome
 }
 
-# --- App 1 ---
-resource "docker_container" "app1" {
-  name  = "app1"
+# Cria containers das aplicações (app1, app2, app3)
+resource "docker_container" "apps" {
+  for_each = toset(var.containers)
+
+  name  = each.key
   image = "nginx:alpine"
+
   networks_advanced {
     name = docker_network.rede_interna.name
   }
-}
 
-# --- App 2 ---
-resource "docker_container" "app2" {
-  name  = "app2"
-  image = "nginx:alpine"
-  networks_advanced {
-    name = docker_network.rede_interna.name
+  labels = {
+    "project" = "Projeto-IFMT"
+    "author"  = "Diogo Mendoza"
+    "type"    = "app"
   }
 }
 
-# --- App 3 ---
-resource "docker_container" "app3" {
-  name  = "app3"
-  image = "nginx:alpine"
-  networks_advanced {
-    name = docker_network.rede_interna.name
-  }
-}
-
-# --- Proxy reverso ---
+# Cria o container proxy reverso (Nginx)
 resource "docker_container" "proxy" {
   name  = "proxy"
-  image = "nginx:latest"
+  image = var.nginx_image
+
   ports {
     internal = 80
     external = 80
@@ -55,14 +47,15 @@ resource "docker_container" "proxy" {
   }
 
   volumes {
-  host_path      = abspath("${path.module}/nginx.conf")
-  container_path = "/etc/nginx/nginx.conf"
-}
+    host_path      = abspath("${path.module}/nginx.conf")
+    container_path = "/etc/nginx/nginx.conf"
+  }
 
+  labels = {
+    "project" = "Projeto-IFMT"
+    "author"  = "Diogo Mendoza"
+    "type"    = "proxy"
+  }
 
-  depends_on = [
-    docker_container.app1,
-    docker_container.app2,
-    docker_container.app3
-  ]
+  depends_on = [docker_container.apps]
 }
