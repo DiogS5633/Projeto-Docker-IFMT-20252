@@ -2,81 +2,71 @@ terraform {
   required_providers {
     docker = {
       source  = "kreuzwerker/docker"
-      version = "~> 3.0.2"
+      version = "~> 3.0"
     }
   }
 }
 
 provider "docker" {}
 
-# Cria rede interna
-resource "docker_network" "rede_interna" {
-  name = var.rede_nome
+# ----------------------------
+# Rede Docker para o DHCP
+# ----------------------------
+resource "docker_network" "dhcp_net" {
+  name   = "dhcp_net"
+  driver = "bridge"
+
+  ipam_config {
+    subnet  = "172.30.0.0/24"  # Mudamos para evitar conflito
+    gateway = "172.30.0.1"
+  }
 }
 
-# Cria múltiplas réplicas de apps para alta disponibilidade
-resource "docker_container" "apps" {
-  for_each = {
-    for app in var.containers :
-    app.name => app
+# ----------------------------
+# Imagem do servidor DHCP
+# ----------------------------
+resource "docker_image" "dhcp_server" {
+  name = "custom-dhcp-server"
+
+  build {
+    context    = "${path.module}/dhcp"
+    dockerfile = "${path.module}/dhcp/Dockerfile"
   }
+}
 
-  count = each.value.replicas
-
-  name  = "${each.key}-${count.index + 1}"
-  image = "nginx:alpine"
+# ----------------------------
+# Container do servidor DHCP
+# ----------------------------
+resource "docker_container" "dhcp_server" {
+  name  = "dhcp_server"
+  image = docker_image.dhcp_server.image_id
 
   networks_advanced {
-    name = docker_network.rede_interna.name
+    name = docker_network.dhcp_net.name
   }
 
   restart = "always"
-
-  healthcheck {
-    test     = ["CMD", "wget", "--spider", "http://localhost"]
-    interval = "30s"
-    timeout  = "10s"
-    retries  = 3
-  }
-
-  labels = {
-    "project" = "Projeto-IFMT"
-    "type"    = "app"
-    "app"     = each.key
-  }
 }
 
-# Cria proxy reverso com balanceamento e volume de logs
-resource "docker_container" "proxy" {
-  name  = "proxy"
-  image = var.nginx_image
-
-  ports {
-    internal = 80
-    external = var.porta_externa
-  }
+# Cliente DHCP para teste
+resource "docker_container" "client1" {
+  name    = "client1"
+  image   = "alpine"
+  command = ["sleep", "3600"]
 
   networks_advanced {
-    name = docker_network.rede_interna.name
+    name = docker_network.dhcp_net.name
   }
-
-  volumes = [
-    {
-      host_path      = abspath("${path.module}/nginx.conf")
-      container_path = "/etc/nginx/nginx.conf"
-    },
-    {
-      host_path      = abspath("${path.module}/logs")
-      container_path = "/var/log/nginx"
-    }
-  ]
-
-  restart = "always"
-
-  labels = {
-    "project" = "Projeto-IFMT"
-    "type"    = "proxy"
-  }
-
-  depends_on = [docker_container.apps]
 }
+
+# Cliente DHCP para teste
+resource "docker_container" "client2" {
+  name    = "client2"
+  image   = "alpine"
+  command = ["sleep", "3600"]
+
+  networks_advanced {
+    name = docker_network.dhcp_net.name
+  }
+}
+
