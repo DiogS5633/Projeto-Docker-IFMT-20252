@@ -64,22 +64,22 @@ README.md → Documentação do projeto.
 ▶️ Execução do Projeto
 
 
-Inicializar o Terraform
+1°Inicializar o Terraform
 
 terraform init
 
 
-Aplicar a infraestrutura
+2°Aplicar a infraestrutura
 
 terraform apply -auto-approve
 
 
-Verificar containers em execução
+3°Verificar containers em execução
 
 docker ps
 
 
-Testar o cliente DHCP
+4°Testar o cliente DHCP
 
 docker exec -it client1 sh
 udhcpc -i eth0
