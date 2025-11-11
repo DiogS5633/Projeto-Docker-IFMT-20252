@@ -54,11 +54,11 @@ projeto-dhcp-terraform/
 
 *.* main.tf → Define toda a infraestrutura com Terraform (rede, containers e permissões).
 
-dhcp/Dockerfile → Cria a imagem personalizada do servidor DHCP.
+*.* dhcp/Dockerfile → Cria a imagem personalizada do servidor DHCP.
 
-dhcp/dhcpd.conf → Arquivo de configuração do serviço DHCP.
+*.* dhcp/dhcpd.conf → Arquivo de configuração do serviço DHCP.
 
-README.md → Documentação do projeto.
+*.* README.md → Documentação do projeto.
 
 
 ▶️ Execução do Projeto
