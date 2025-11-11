@@ -18,16 +18,28 @@ VS Code	Ambiente de desenvolvimento e execução dos comandos
 
   
 Terraform
+
    └── Docker Provider
+   
         ├── Rede Docker: dhcp_net (bridge)
+        
         ├── Container: dhcp_server (servidor DHCP)
+        
         └── Container: client1 (cliente de teste)
+        
 
 
 📂 Estrutura de Pastas
+
 projeto-dhcp-terraform/
+
 ├── main.tf
+
 ├── dhcp/
+
 │   ├── Dockerfile
+
 │   └── dhcpd.conf
+
 └── README.md
+
