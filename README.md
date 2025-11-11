@@ -82,7 +82,9 @@ projeto-dhcp-terraform/
 4°Testar o cliente DHCP
 
 │   ├── docker exec -it client1 sh
+
 │   ├── udhcpc -i eth0
+
 │   ├── ip a
 
 
