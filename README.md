@@ -66,24 +66,24 @@ projeto-dhcp-terraform/
 
 1°Inicializar o Terraform
 
-   terraform init
+   ├── terraform init
 
 
 2°Aplicar a infraestrutura
 
-   terraform apply -auto-approve
+   ├── terraform apply -auto-approve
 
 
 3°Verificar containers em execução
 
-   docker ps
+   ├── docker ps
 
 
 4°Testar o cliente DHCP
 
-   docker exec -it client1 sh
-   udhcpc -i eth0
-   ip a
+   ├── docker exec -it client1 sh
+   ├── udhcpc -i eth0
+   ├── ip a
 
 
 🧠 Resultados Esperados
