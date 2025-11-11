@@ -16,11 +16,12 @@ VS Code	Ambiente de desenvolvimento e execução dos comandos
 
 ⚙️ Arquitetura do Ambiente
 
+  
 Terraform
- └── Docker Provider
-      ├── Rede Docker: dhcp_net (bridge)
-      ├── Container: dhcp_server (servidor DHCP)
-      └── Container: client1 (cliente de teste)
+   └── Docker Provider
+        ├── Rede Docker: dhcp_net (bridge)
+        ├── Container: dhcp_server (servidor DHCP)
+        └── Container: client1 (cliente de teste)
 
 
 📂 Estrutura de Pastas
