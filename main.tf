@@ -69,4 +69,3 @@ resource "docker_container" "client2" {
     name = docker_network.dhcp_net.name
   }
 }
-
