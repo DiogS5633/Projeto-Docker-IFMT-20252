@@ -52,7 +52,7 @@ projeto-dhcp-terraform/
 
 
 
-main.tf → Define toda a infraestrutura com Terraform (rede, containers e permissões).
+*.* main.tf → Define toda a infraestrutura com Terraform (rede, containers e permissões).
 
 dhcp/Dockerfile → Cria a imagem personalizada do servidor DHCP.
 
@@ -66,24 +66,24 @@ README.md → Documentação do projeto.
 
 1°Inicializar o Terraform
 
-terraform init
+   terraform init
 
 
 2°Aplicar a infraestrutura
 
-terraform apply -auto-approve
+   terraform apply -auto-approve
 
 
 3°Verificar containers em execução
 
-docker ps
+   docker ps
 
 
 4°Testar o cliente DHCP
 
-docker exec -it client1 sh
-udhcpc -i eth0
-ip a
+   docker exec -it client1 sh
+   udhcpc -i eth0
+   ip a
 
 
 🧠 Resultados Esperados
