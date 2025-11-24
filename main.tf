@@ -17,7 +17,7 @@ resource "docker_network" "dhcp_net" {
   driver = "bridge"
 
   ipam_config {
-    subnet  = "172.30.0.0/24"  # Mudamos para evitar conflito
+    subnet  = "172.30.0.0/24"
     gateway = "172.30.0.1"
   }
 }
@@ -48,22 +48,31 @@ resource "docker_container" "dhcp_server" {
   restart = "always"
 }
 
-# Cliente DHCP para teste
+# ----------------------------
+# Cliente DHCP automatizado
+# ----------------------------
 resource "docker_container" "client1" {
   name    = "client1"
   image   = "alpine"
-  command = ["sleep", "3600"]
+  command = ["sh", "-c", "udhcpc -i eth0 && sleep 3600"]
+
+  capabilities {
+    add = ["NET_ADMIN"]
+  }
 
   networks_advanced {
     name = docker_network.dhcp_net.name
   }
 }
 
-# Cliente DHCP para teste
 resource "docker_container" "client2" {
   name    = "client2"
   image   = "alpine"
-  command = ["sleep", "3600"]
+  command = ["sh", "-c", "udhcpc -i eth0 && sleep 3600"]
+
+  capabilities {
+    add = ["NET_ADMIN"]
+  }
 
   networks_advanced {
     name = docker_network.dhcp_net.name
