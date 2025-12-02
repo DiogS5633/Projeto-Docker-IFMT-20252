@@ -42,11 +42,9 @@ projeto-dhcp-terraform/
 
 ├── main.tf
 
-├── dhcp/
+├── Dockerfile
 
-│   ├── Dockerfile
-
-│   └── dhcpd.conf
+├── dhcpd.conf
 
 └── README.md
 
