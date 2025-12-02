@@ -45,16 +45,30 @@ resource "docker_container" "dhcp_server" {
     name = docker_network.dhcp_net.name
   }
 
+  # *** ESSENCIAL PARA FUNCIONAR ***
+  privileged = true
+
+  capabilities {
+    add = ["NET_ADMIN"]
+  }
+
+  # Porta DHCP
+  ports {
+    internal = 67
+    external = 67
+    protocol = "udp"
+  }
+
   restart = "always"
 }
 
 # ----------------------------
-# Cliente DHCP automatizado
+# Cliente DHCP 1
 # ----------------------------
 resource "docker_container" "client1" {
   name    = "client1"
   image   = "alpine"
-  command = ["sh", "-c", "udhcpc -i eth0 && sleep 3600"]
+  command = ["sh", "-c", "udhcpc -i eth0 -vv && sleep 3600"]
 
   capabilities {
     add = ["NET_ADMIN"]
@@ -62,13 +76,17 @@ resource "docker_container" "client1" {
 
   networks_advanced {
     name = docker_network.dhcp_net.name
+    ipv4_address = null
   }
 }
 
+# ----------------------------
+# Cliente DHCP 2
+# ----------------------------
 resource "docker_container" "client2" {
   name    = "client2"
   image   = "alpine"
-  command = ["sh", "-c", "udhcpc -i eth0 && sleep 3600"]
+  command = ["sh", "-c", "udhcpc -i eth0 -vv && sleep 3600"]
 
   capabilities {
     add = ["NET_ADMIN"]
@@ -76,5 +94,6 @@ resource "docker_container" "client2" {
 
   networks_advanced {
     name = docker_network.dhcp_net.name
+    ipv4_address = null
   }
 }
